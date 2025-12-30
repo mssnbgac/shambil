@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../utils/api.ts';
 
 interface User {
   id: string;
@@ -28,7 +29,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Set up axios defaults - point to backend server
-const API_BASE_URL = 'http://localhost:4000/api';
 axios.defaults.baseURL = API_BASE_URL;
 
 // Add token to requests

@@ -5,6 +5,7 @@ import StudentDashboard from '../components/dashboards/StudentDashboard.tsx';
 import ExamOfficerDashboard from '../components/dashboards/ExamOfficerDashboard.tsx';
 import ParentDashboard from '../components/dashboards/ParentDashboard.tsx';
 import TeacherDashboard from '../components/dashboards/TeacherDashboard.tsx';
+import { API_BASE_URL } from '../utils/api.ts';
 
 // Type definitions
 interface Student {
@@ -101,7 +102,7 @@ const AccountantDashboard = () => {
   // Fetch financial stats
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/dashboard/accountant/stats?academicYear=${selectedSession}&term=${selectedTerm}`, {
+      const response = await fetch(`${API_BASE_URL}/dashboard/accountant/stats?academicYear=${selectedSession}&term=${selectedTerm}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -114,7 +115,7 @@ const AccountantDashboard = () => {
   // Fetch accountant data
   const fetchAccountantData = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/dashboard/accountant/current', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/accountant/current`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -129,7 +130,7 @@ const AccountantDashboard = () => {
     if (studentSearch.length < 2) return;
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/accountant/students/search?search=${studentSearch}&academicYear=${selectedSession}&term=${selectedTerm}`, {
+      const response = await fetch(`${API_BASE_URL}/accountant/students/search?search=${studentSearch}&academicYear=${selectedSession}&term=${selectedTerm}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -148,7 +149,7 @@ const AccountantDashboard = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/accountant/payments/confirm', {
+      const response = await fetch(`${API_BASE_URL}/accountant/payments/confirm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +170,7 @@ const AccountantDashboard = () => {
         
         // Automatically generate receipt after payment confirmation
         try {
-          const receiptResponse = await fetch('http://localhost:4000/api/accountant/payments/generate-receipt', {
+          const receiptResponse = await fetch(`${API_BASE_URL}/accountant/payments/generate-receipt`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -221,7 +222,7 @@ const AccountantDashboard = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/accountant/expenditures', {
+      const response = await fetch(`${API_BASE_URL}/accountant/expenditures`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -261,7 +262,7 @@ const AccountantDashboard = () => {
   // Send financial report
   const sendReport = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/accountant/reports/financial', {
+      const response = await fetch(`${API_BASE_URL}/accountant/reports/financial`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -300,7 +301,7 @@ const AccountantDashboard = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/accountant/add-money', {
+      const response = await fetch(`${API_BASE_URL}/accountant/add-money`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

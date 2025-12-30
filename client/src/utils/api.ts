@@ -23,4 +23,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Export both the configured axios instance and the base URL
+export { API_BASE_URL };
 export default api;
