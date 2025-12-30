@@ -2,7 +2,7 @@
 
 ## ✅ Repository Status: READY FOR VERCEL DEPLOYMENT
 
-Your Shambil Pride Academy School Management System is now fully configured and pushed to GitHub repository: **https://github.com/mssnbgac/shambilprideacad.git**
+Your Shambil Pride Academy School Management System is now fully configured and pushed to GitHub repository: **https://github.com/mssnbgac/shambil.git**
 
 ### 🔧 Latest Fixes Applied:
 - **Fixed Vercel configuration error**: Removed conflicting `functions` property from `vercel.json`
@@ -20,7 +20,7 @@ Your Shambil Pride Academy School Management System is now fully configured and 
 3. Click **"New Project"**
 
 ### Step 2: Import Your Repository
-1. Find and select **"mssnbgac/shambilprideacad"** repository
+1. Find and select **"mssnbgac/shambil"** repository
 2. Click **"Import"**
 
 ### Step 3: Configure Project Settings
