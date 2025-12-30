@@ -1,26 +1,15 @@
 // Vercel serverless function entry point
-import { VercelRequest, VercelResponse } from '@vercel/node';
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
-
-dotenv.config();
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Middleware
 app.use(cors({
   origin: true,
   credentials: true
 }));
-
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Demo users for authentication
 const demoUsers = [
@@ -32,22 +21,7 @@ const demoUsers = [
   { id: 6, email: 'parent@shambil.edu.ng', password: 'parent123', role: 'parent', firstName: 'Parent', lastName: 'User' }
 ];
 
-// Demo data
-const demoClasses = [
-  { id: 1, name: 'JSS 1A', level: 'JSS 1' },
-  { id: 2, name: 'JSS 1B', level: 'JSS 1' },
-  { id: 3, name: 'JSS 2A', level: 'JSS 2' },
-  { id: 4, name: 'JSS 3A', level: 'JSS 3' }
-];
-
-const demoSubjects = [
-  { id: 1, name: 'Mathematics', code: 'MTH' },
-  { id: 2, name: 'English Language', code: 'ENG' },
-  { id: 3, name: 'Basic Science', code: 'BSC' },
-  { id: 4, name: 'Social Studies', code: 'SST' },
-  { id: 5, name: 'Islamic Religious Studies', code: 'IRS' }
-];
-
+// Demo results data
 const demoResults = {
   'SHA/1996/003': {
     '2024-2025': {
@@ -71,7 +45,7 @@ const demoResults = {
 };
 
 // Helper function to decode token
-const decodeToken = (token: string) => {
+const decodeToken = (token) => {
   try {
     return JSON.parse(Buffer.from(token, 'base64').toString());
   } catch {
@@ -79,7 +53,7 @@ const decodeToken = (token: string) => {
   }
 };
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
@@ -88,76 +62,57 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// School content endpoints
+// School content
 app.get('/api/school-content', (req, res) => {
-  try {
-    const content = {
-      heroTitle: "Welcome to Shambil Pride Academy Birnin Gwari",
-      heroSubtitle: "Excellence in Education, Character Building, and Academic Achievement",
-      aboutTitle: "About Our School",
-      aboutContent: "Shambil Pride Academy Birnin Gwari is a leading educational institution committed to providing quality education and nurturing young minds. We focus on academic excellence, character development, and preparing students for future success.",
-      missionTitle: "Our Mission",
-      missionContent: "To provide comprehensive education that develops intellectual, social, and moral capabilities of our students while fostering a love for learning and respect for others.",
-      visionTitle: "Our Vision", 
-      visionContent: "To be the premier educational institution in Birnin Gwari, known for academic excellence, character development, and producing well-rounded graduates who contribute positively to society.",
-      contactPhone: ["+2348079387958", "+2348034012480"],
-      contactEmail: "shehubala70@gmail.com",
-      contactAddress: "Birnin Gwari, Kaduna State, Nigeria",
-      schoolHours: "Monday - Friday: 7:00 AM - 3:00 PM"
-    };
-    
-    res.json(content);
-  } catch (error) {
-    console.error('Error fetching school content:', error);
-    res.status(500).json({ message: 'Error fetching school content' });
-  }
+  res.json({
+    heroTitle: "Welcome to Shambil Pride Academy Birnin Gwari",
+    heroSubtitle: "Excellence in Education, Character Building, and Academic Achievement",
+    aboutTitle: "About Our School",
+    aboutContent: "Shambil Pride Academy Birnin Gwari is a leading educational institution committed to providing quality education and nurturing young minds.",
+    missionTitle: "Our Mission",
+    missionContent: "To provide comprehensive education that develops intellectual, social, and moral capabilities of our students.",
+    visionTitle: "Our Vision", 
+    visionContent: "To be the premier educational institution in Birnin Gwari, known for academic excellence and character development.",
+    contactPhone: ["+2348079387958", "+2348034012480"],
+    contactEmail: "shehubala70@gmail.com",
+    contactAddress: "Birnin Gwari, Kaduna State, Nigeria",
+    schoolHours: "Monday - Friday: 7:00 AM - 3:00 PM"
+  });
 });
 
 app.put('/api/school-content', (req, res) => {
-  try {
-    // In production, you'd save this to a database
-    // For now, just return success
-    res.json({ message: 'School content updated successfully' });
-  } catch (error) {
-    console.error('Error updating school content:', error);
-    res.status(500).json({ message: 'Error updating school content' });
-  }
+  res.json({ message: 'School content updated successfully' });
 });
 
-// Authentication endpoints
+// Authentication
 app.post('/api/auth/login', (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
+  
+  const user = demoUsers.find(u => u.email === email && u.password === password);
+  
+  if (user) {
+    const token = Buffer.from(JSON.stringify({ 
+      userId: user.id,
+      id: user.email, 
+      email: user.email, 
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName
+    })).toString('base64');
     
-    const user = demoUsers.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-      const token = Buffer.from(JSON.stringify({ 
-        userId: user.id,
-        id: user.email, 
-        email: user.email, 
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.email,
+        email: user.email,
         role: user.role,
         firstName: user.firstName,
         lastName: user.lastName
-      })).toString('base64');
-      
-      res.json({
-        success: true,
-        token,
-        user: {
-          id: user.email,
-          email: user.email,
-          role: user.role,
-          firstName: user.firstName,
-          lastName: user.lastName
-        }
-      });
-    } else {
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ success: false, message: 'Login failed' });
+      }
+    });
+  } else {
+    res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
 });
 
@@ -165,9 +120,9 @@ app.post('/api/auth/login', (req, res) => {
 app.get('/api/dashboard/admin/current', (req, res) => {
   const admin = demoUsers.find(u => u.role === 'admin');
   res.json({
-    firstName: admin?.firstName || 'Admin',
-    lastName: admin?.lastName || 'User',
-    email: admin?.email || 'admin@shambil.edu.ng',
+    firstName: admin.firstName,
+    lastName: admin.lastName,
+    email: admin.email,
     role: 'admin'
   });
 });
@@ -202,9 +157,9 @@ app.get('/api/dashboard/student/current', (req, res) => {
 app.get('/api/dashboard/teacher/current', (req, res) => {
   const teacher = demoUsers.find(u => u.role === 'teacher');
   res.json({
-    firstName: teacher?.firstName || 'Teacher',
-    lastName: teacher?.lastName || 'User',
-    email: teacher?.email || 'teacher@shambil.edu.ng',
+    firstName: teacher.firstName,
+    lastName: teacher.lastName,
+    email: teacher.email,
     role: 'teacher'
   });
 });
@@ -212,9 +167,9 @@ app.get('/api/dashboard/teacher/current', (req, res) => {
 app.get('/api/dashboard/accountant/current', (req, res) => {
   const accountant = demoUsers.find(u => u.role === 'accountant');
   res.json({
-    firstName: accountant?.firstName || 'Accountant',
-    lastName: accountant?.lastName || 'User',
-    email: accountant?.email || 'accountant@shambil.edu.ng',
+    firstName: accountant.firstName,
+    lastName: accountant.lastName,
+    email: accountant.email,
     role: 'accountant'
   });
 });
@@ -222,9 +177,9 @@ app.get('/api/dashboard/accountant/current', (req, res) => {
 app.get('/api/dashboard/exam-officer/current', (req, res) => {
   const examOfficer = demoUsers.find(u => u.role === 'exam_officer');
   res.json({
-    firstName: examOfficer?.firstName || 'Exam',
-    lastName: examOfficer?.lastName || 'Officer',
-    email: examOfficer?.email || 'exam@shambil.edu.ng',
+    firstName: examOfficer.firstName,
+    lastName: examOfficer.lastName,
+    email: examOfficer.email,
     role: 'exam_officer'
   });
 });
@@ -232,9 +187,9 @@ app.get('/api/dashboard/exam-officer/current', (req, res) => {
 app.get('/api/dashboard/parent/current', (req, res) => {
   const parent = demoUsers.find(u => u.role === 'parent');
   res.json({
-    firstName: parent?.firstName || 'Parent',
-    lastName: parent?.lastName || 'User',
-    email: parent?.email || 'parent@shambil.edu.ng',
+    firstName: parent.firstName,
+    lastName: parent.lastName,
+    email: parent.email,
     role: 'parent'
   });
 });
@@ -271,81 +226,86 @@ app.get('/api/dashboard/accountant/stats', (req, res) => {
   });
 });
 
-// Results endpoints
+// Results endpoint
 app.get('/api/results/student/current', (req, res) => {
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    const { academicYear = '2024-2025', term = 'First Term' } = req.query;
-    
-    if (!token) {
-      return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
-
-    const decoded = decodeToken(token);
-    if (!decoded) {
-      return res.status(401).json({ message: 'Invalid token.' });
-    }
-
-    const student = demoUsers.find(u => u.email === decoded.email && u.role === 'student');
-    if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-
-    const admissionNumber = student.admissionNumber || 'SHA/1996/003';
-    const studentResults = demoResults[admissionNumber as keyof typeof demoResults];
-    
-    if (!studentResults || !studentResults[academicYear as string] || !studentResults[academicYear as string][term as string]) {
-      return res.json({ 
-        hasResults: false, 
-        results: null, 
-        subjects: [],
-        message: `No results available for ${academicYear} - ${term}`,
-        studentInfo: {
-          name: `${student.firstName} ${student.lastName}`,
-          admissionNumber: admissionNumber
-        }
-      });
-    }
-
-    const termResults = studentResults[academicYear as string][term as string];
-
-    res.json({
-      hasResults: true,
-      results: {
-        id: 1,
-        studentId: admissionNumber,
-        classId: 1,
-        academicYear: academicYear,
-        term: term,
-        totalScore: termResults.totalScore,
-        averageScore: termResults.averageScore,
-        overallGrade: termResults.overallGrade,
-        remarks: termResults.remarks,
-        position: termResults.position,
-        totalStudents: termResults.totalStudents,
-        published: 1,
-        enteredAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      subjects: termResults.subjects
-    });
-  } catch (error) {
-    console.error('Error fetching student results:', error);
-    res.status(500).json({ message: 'Server error' });
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const { academicYear = '2024-2025', term = 'First Term' } = req.query;
+  
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
   }
+
+  const decoded = decodeToken(token);
+  if (!decoded) {
+    return res.status(401).json({ message: 'Invalid token.' });
+  }
+
+  const student = demoUsers.find(u => u.email === decoded.email && u.role === 'student');
+  if (!student) {
+    return res.status(404).json({ message: 'Student not found' });
+  }
+
+  const admissionNumber = student.admissionNumber || 'SHA/1996/003';
+  const studentResults = demoResults[admissionNumber];
+  
+  if (!studentResults || !studentResults[academicYear] || !studentResults[academicYear][term]) {
+    return res.json({ 
+      hasResults: false, 
+      results: null, 
+      subjects: [],
+      message: `No results available for ${academicYear} - ${term}`,
+      studentInfo: {
+        name: `${student.firstName} ${student.lastName}`,
+        admissionNumber: admissionNumber
+      }
+    });
+  }
+
+  const termResults = studentResults[academicYear][term];
+
+  res.json({
+    hasResults: true,
+    results: {
+      id: 1,
+      studentId: admissionNumber,
+      classId: 1,
+      academicYear: academicYear,
+      term: term,
+      totalScore: termResults.totalScore,
+      averageScore: termResults.averageScore,
+      overallGrade: termResults.overallGrade,
+      remarks: termResults.remarks,
+      position: termResults.position,
+      totalStudents: termResults.totalStudents,
+      published: 1,
+      enteredAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    subjects: termResults.subjects
+  });
 });
 
-// Classes endpoints
+// Classes and subjects
 app.get('/api/classes', (req, res) => {
-  res.json(demoClasses);
+  res.json([
+    { id: 1, name: 'JSS 1A', level: 'JSS 1' },
+    { id: 2, name: 'JSS 1B', level: 'JSS 1' },
+    { id: 3, name: 'JSS 2A', level: 'JSS 2' },
+    { id: 4, name: 'JSS 3A', level: 'JSS 3' }
+  ]);
 });
 
-// Subjects endpoints
 app.get('/api/subjects', (req, res) => {
-  res.json(demoSubjects);
+  res.json([
+    { id: 1, name: 'Mathematics', code: 'MTH' },
+    { id: 2, name: 'English Language', code: 'ENG' },
+    { id: 3, name: 'Basic Science', code: 'BSC' },
+    { id: 4, name: 'Social Studies', code: 'SST' },
+    { id: 5, name: 'Islamic Religious Studies', code: 'IRS' }
+  ]);
 });
 
-// Student search endpoint
+// Student search
 app.get('/api/students/search/admission/:admissionNumber', (req, res) => {
   const { admissionNumber } = req.params;
   
@@ -372,7 +332,7 @@ app.get('/api/students/search/admission/:admissionNumber', (req, res) => {
   }
 });
 
-// Teacher messaging endpoints
+// Messaging endpoints
 app.get('/api/teacher/messages', (req, res) => {
   res.json([
     {
@@ -403,7 +363,6 @@ app.post('/api/teacher/messages', (req, res) => {
   });
 });
 
-// Exam officer messaging endpoints
 app.get('/api/exam-officer/messages', (req, res) => {
   res.json([
     {
@@ -430,22 +389,12 @@ app.patch('/api/exam-officer/messages/:id/reply', (req, res) => {
   });
 });
 
-// Catch all other routes
+// Catch all
 app.all('*', (req, res) => {
   res.status(404).json({ 
     message: 'Endpoint not found',
     path: req.path,
-    method: req.method,
-    availableEndpoints: [
-      'GET /api/health',
-      'GET /api/school-content',
-      'PUT /api/school-content',
-      'POST /api/auth/login',
-      'GET /api/dashboard/*/current',
-      'GET /api/results/student/current',
-      'GET /api/classes',
-      'GET /api/subjects'
-    ]
+    method: req.method
   });
 });
 
