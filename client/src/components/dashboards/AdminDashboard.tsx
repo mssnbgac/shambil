@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../utils/api.ts';
 import { 
   UserGroupIcon, 
   AcademicCapIcon, 
@@ -18,24 +19,6 @@ import {
   PencilSquareIcon
 } from '@heroicons/react/24/outline';
 // import ResultEntryForm from '../ResultEntryForm';
-
-// Configure axios instances
-const api = axios.create({
-  baseURL: 'http://localhost:4000/api',
-});
-
-// Add token interceptor to api instance
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-const dashboardApi = axios.create({
-  baseURL: 'http://localhost:4000/api',
-});
 
 // Reports Management View Component
 const ReportsManagementView: React.FC = () => {

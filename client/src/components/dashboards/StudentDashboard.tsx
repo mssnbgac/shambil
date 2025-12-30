@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-
-// Configure axios base URL
-const api = axios.create({
-  baseURL: 'http://localhost:4000/api',
-});
+import api from '../../utils/api.ts';
 
 // Add authentication interceptor
 api.interceptors.request.use((config) => {

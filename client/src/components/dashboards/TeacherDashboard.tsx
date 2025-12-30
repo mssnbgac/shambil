@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../utils/api.ts';
 import { 
   UserIcon, 
   AcademicCapIcon, 
@@ -79,7 +80,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ user }) => {
 
   const fetchTeacherData = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/dashboard/teacher/current', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/teacher/current`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -98,7 +99,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ user }) => {
 
   const fetchTeacherStats = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/dashboard/teacher/stats', {
+      const response = await fetch(`${API_BASE_URL}/dashboard/teacher/stats`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -127,7 +128,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ user }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/teacher/messages', {
+      const response = await fetch(`${API_BASE_URL}/teacher/messages`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -150,7 +151,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ user }) => {
         return;
       }
 
-      const response = await fetch('http://localhost:4000/api/teacher/messages', {
+      const response = await fetch(`${API_BASE_URL}/teacher/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
