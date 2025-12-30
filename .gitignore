@@ -8,6 +8,7 @@ yarn-error.log*
 /client/build
 /server/dist
 /server/build
+.vercel
 
 # Environment variables
 .env

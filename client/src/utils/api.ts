@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 // Create axios instance with base configuration
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '/api'  // Use relative path for Vercel deployment
+  : 'http://localhost:4000/api';
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
