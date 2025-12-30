@@ -28,22 +28,6 @@ interface DashboardStats {
   pendingResults: number;
 }
 
-interface Comment {
-  id: number;
-  title: string;
-  content: string;
-  category: string;
-  priority: string;
-  status: string;
-  submittedBy: {
-    name: string;
-    role: string;
-  };
-  submittedAt: string;
-  response?: string;
-  respondedAt?: string;
-}
-
 interface ReportData {
   academicYear: string;
   term: string;
