@@ -8,6 +8,8 @@ Your Shambil Pride Academy School Management System is now fully configured and 
 - **Fixed Vercel configuration error**: Removed conflicting `functions` property from `vercel.json`
 - **Updated Node.js version**: Upgraded from 18.x to 24.x as required by Vercel
 - **Updated npm version**: Upgraded to 10.x for compatibility
+- **Fixed build configuration**: Updated vercel.json to use correct API entry point (`api/index.ts`)
+- **Fixed client build**: Simplified build process to resolve `index.html not found` error
 - **Configuration now fully compatible** with Vercel's latest requirements
 
 ## 🚀 Next Steps: Deploy to Vercel
