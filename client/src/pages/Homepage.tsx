@@ -3,15 +3,6 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext.tsx';
 
-interface SchoolContent {
-  _id: string;
-  section: string;
-  title: string;
-  content: string;
-  images?: string[];
-  publishedAt: string;
-}
-
 const Homepage: React.FC = () => {
   const { user } = useAuth();
   const [content, setContent] = useState<any>({});

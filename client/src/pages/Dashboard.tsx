@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import AdminDashboard from '../components/dashboards/AdminDashboard.tsx';
 import StudentDashboard from '../components/dashboards/StudentDashboard.tsx';
@@ -47,19 +47,6 @@ interface Stats {
   totalExpenditures: number;
 }
 
-interface ParentData {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  children?: Array<{
-    firstName: string;
-    lastName: string;
-    admissionNumber: string;
-    className: string;
-  }>;
-}
-
 // Full-featured AccountantDashboard component
 const AccountantDashboard = () => {
   const [activeView, setActiveView] = React.useState<string>('dashboard');
@@ -73,7 +60,6 @@ const AccountantDashboard = () => {
   const [showReportForm, setShowReportForm] = React.useState<boolean>(false);
   const [showManualMoneyForm, setShowManualMoneyForm] = React.useState<boolean>(false);
   const [stats, setStats] = React.useState<Stats | null>(null);
-  const [expenditures, setExpenditures] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [accountantData, setAccountantData] = React.useState<AccountantData | null>(null);
 
@@ -113,7 +99,7 @@ const AccountantDashboard = () => {
   });
 
   // Fetch financial stats
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/dashboard/accountant/stats?academicYear=${selectedSession}&term=${selectedTerm}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -123,7 +109,7 @@ const AccountantDashboard = () => {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  };
+  }, [selectedSession, selectedTerm]);
 
   // Fetch accountant data
   const fetchAccountantData = async () => {
@@ -139,7 +125,7 @@ const AccountantDashboard = () => {
   };
 
   // Search students
-  const searchStudents = async () => {
+  const searchStudents = useCallback(async () => {
     if (studentSearch.length < 2) return;
     setLoading(true);
     try {
@@ -152,7 +138,7 @@ const AccountantDashboard = () => {
       console.error('Error searching students:', error);
     }
     setLoading(false);
-  };
+  }, [studentSearch, selectedSession, selectedTerm]);
 
   // Confirm payment
   const confirmPayment = async () => {
@@ -352,7 +338,7 @@ const AccountantDashboard = () => {
   React.useEffect(() => {
     fetchStats();
     fetchAccountantData();
-  }, [selectedSession, selectedTerm]);
+  }, [selectedSession, selectedTerm, fetchStats]);
 
   // Search students when search term changes
   React.useEffect(() => {
@@ -361,7 +347,7 @@ const AccountantDashboard = () => {
     } else {
       setSearchResults([]);
     }
-  }, [studentSearch, selectedSession, selectedTerm]);
+  }, [studentSearch, selectedSession, selectedTerm, searchStudents]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-NG', {

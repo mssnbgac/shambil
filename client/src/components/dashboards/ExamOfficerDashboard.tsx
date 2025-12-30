@@ -521,7 +521,7 @@ const ReportsManagement: React.FC = () => {
   const [selectedReportStatus, setSelectedReportStatus] = useState('all');
 
   // Fetch saved reports
-  const { data: reportsData, isLoading: reportsLoading, refetch: refetchReports } = useQuery(
+  const { data: reportsData, isLoading: reportsLoading } = useQuery(
     ['saved-reports', selectedReportStatus],
     () => api.get('/reports', {
       params: {
@@ -1487,7 +1487,7 @@ const SavedReports: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
 
   // Fetch saved reports
-  const { data: reportsData, isLoading, refetch } = useQuery(
+  const { data: reportsData, isLoading } = useQuery(
     ['saved-reports', statusFilter],
     () => api.get('/reports', {
       params: {
