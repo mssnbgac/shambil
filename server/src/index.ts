@@ -9,7 +9,7 @@ import sequelize, { connectSQLiteDB } from './config/sqlite-database';
 import sqliteAuthRoutes from './routes/sqlite-auth';
 import classesRoutes from './routes/classes';
 import subjectsRoutes from './routes/subjects';
-import dashboardRoutes from './routes/dashboard';
+// import dashboardRoutes from './routes/dashboard'; // Commented out to avoid conflicts
 import parentsRoutes from './routes/parents';
 // import sqliteStudentsRoutes from './routes/sqlite-students';
 
@@ -46,7 +46,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', sqliteAuthRoutes);
 app.use('/api/classes', classesRoutes);
 app.use('/api/subjects', subjectsRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+// app.use('/api/dashboard', dashboardRoutes); // Commented out to avoid conflicts
 app.use('/api/parents', parentsRoutes);
 // app.use('/api/students', sqliteStudentsRoutes);
 
@@ -2134,7 +2134,7 @@ app.put('/api/school-content', async (req, res) => {
     console.error('❌ Error updating school content:', error);
     res.status(500).json({ 
       message: 'Failed to update content',
-      error: error.message 
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });
