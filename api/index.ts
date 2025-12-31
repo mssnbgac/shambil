@@ -550,4 +550,7 @@ app.all('*', (req, res) => {
   });
 });
 
-export default app;
+// Export handler for Vercel serverless functions
+export default (req: any, res: any) => {
+  return app(req, res);
+};
