@@ -41,7 +41,7 @@ git push origin main
 #### **2.3 Create New Project**
 1. Click **"New Project"**
 2. Select **"Deploy from GitHub repo"**
-3. Choose **"academymssn/shambilprideacademy"**
+3. Choose **"mssnbgac/shambil"**
 4. Click **"Deploy Now"**
 
 #### **2.4 Railway Auto-Detection**
