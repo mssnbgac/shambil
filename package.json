@@ -7,12 +7,12 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
-    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "build": "cd server && npm install && npm run build",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
     "heroku-postbuild": "cd client && npm install && npm run build && cd ../server && npm install",
     "start": "cd server && npm start",
     "vercel-build": "cd client && npm install && npm run build",
-    "railway:build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "railway:build": "cd server && npm install && npm run build",
     "railway:start": "cd server && npm start"
   },
   "keywords": [
