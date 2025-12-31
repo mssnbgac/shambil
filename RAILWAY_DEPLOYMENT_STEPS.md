@@ -30,7 +30,7 @@ git push origin main
 2. Click **"Login with GitHub"**
 3. Click **"New Project"**
 4. Select **"Deploy from GitHub repo"**
-5. Select **"mssnbgac/shambil"**
+5. Select **"academymssn/shambilprideacademy"**
 6. Click **"Deploy Now"**
 
 ### **Step 3: Set Environment Variables**
